@@ -1,5 +1,5 @@
 import torch
-import torch.nn
+import torch.nn as NN
 import torch.nn.functional as F
 from torch_geometric_temporal.nn.recurrent import DCRNN
 from .ADCRNN import ADCRNN
@@ -15,7 +15,7 @@ class RecurrentGCN(torch.nn.Module):
     def forward(self, x, edge_index, edge_weight):
         #,A_h,A_z,A_r 
         h,A_h,A_z,A_r = self.recurrent(x, edge_index, edge_weight)
-        h = F.prelu(h)
+        h = NN.PReLU(h)
         h = self.linear(h)
         return h,A_h,A_z,A_r 
     
