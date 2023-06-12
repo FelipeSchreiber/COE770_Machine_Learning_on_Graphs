@@ -5,7 +5,7 @@ from setuptools.command.install import install as _install
 import os
 from pkg_resources import resource_filename
 import subprocess
-from .cfg import *
+from cfg import *
 import logging
 
 class OverrideInstall(_install):
