@@ -11,7 +11,7 @@ import logging
 class OverrideInstall(_install):
     def run(self):
         print(bash_path)
-        subprocess.run(["bash",f"{bash_path}"])    
+        # subprocess.run(["bash",f"{bash_path}"])    
         _install.run(self)
     
 excluded = ['Tests/*.ipynb']
