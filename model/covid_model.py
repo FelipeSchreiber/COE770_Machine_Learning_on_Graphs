@@ -9,7 +9,7 @@ import os
 class RecurrentGCN(torch.nn.Module):
     def __init__(self, num_features=35,num_filters=3):
         super(RecurrentGCN, self).__init__()
-        self.recurrent = DCRNN(num_features, num_filters, 1)
+        self.recurrent = ADCRNN(num_features, num_filters, 1)
         self.linear = torch.nn.Linear(num_filters, 1)
 
     def forward(self, x, edge_index, edge_weight):
