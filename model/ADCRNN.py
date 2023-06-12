@@ -219,7 +219,7 @@ class ADCRNN(torch.nn.Module):
         adj_mat = adj_mat.reshape(adj_mat.size(1), adj_mat.size(2))
         matrix_sim = torch.mm(X, X.transpose(0, 1))
         print(matrix_sim.shape)
-        self.residual_matrix = NN.Softmax(NN.PReLU(matrix_sim))
+        self.residual_matrix = NN.Sigmoid(NN.PReLU(matrix_sim))
         
         adj_mat += self.residual_matrix
         edge_index_, edge_weight_ = dense_to_sparse(adj_mat)
