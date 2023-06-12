@@ -60,7 +60,7 @@ class ADConv(MessagePassing):
         """
         adj_mat = to_dense_adj(edge_index, edge_attr=edge_weight)
         adj_mat = adj_mat.reshape(adj_mat.size(1), adj_mat.size(2))
-        self.residual_matrix = F.softmax(NN.PReLU(torch.mm(X, X.transpose(0, 1))), dim=1)
+        self.residual_matrix = NN.Softmax(NN.PReLU(torch.mm(X, X.transpose(0, 1))), dim=1)
         adj_mat += self.residual_matrix
         deg_out = torch.matmul(
             adj_mat, torch.ones(size=(adj_mat.size(0), 1)).to(X.device)
