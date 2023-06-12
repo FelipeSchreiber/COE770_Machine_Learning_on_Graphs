@@ -41,11 +41,6 @@ class CovidDatasetLoader(object):
         centroids = np.column_stack((m.centroid.x, m.centroid.y))
         lenghts = m.length.values.reshape(-1,1)
         areas = municipios.AREA_KM2.values.reshape(-1,1)
-        print("centroids: ",centroids.shape)
-        ## get polygon sequence of points
-        # coord = municipios.geometry.get_coordinates()
-        # coord.index.name = "index"
-        # coord.groupby("index")
         queen = None
         if self.method == "knn":
             queen = weights.distance.Kernel.from_dataframe(
@@ -63,14 +58,6 @@ class CovidDatasetLoader(object):
         self._edges = np.array(G.edges).T
         self._edge_weights = np.array([w['weight'] for u, v, w in G.edges(data=True)])
         self.static_feat = np.hstack([centroids,one_hot,lenghts,areas])
-        # positions = dict(zip(G.nodes, centroids))
-        # for node in G.nodes():
-        #     G.nodes[node]['MUN'] = municipios.iloc[node].NM_MUN
-        #     G.nodes[node]['CD_MUN'] = municipios.iloc[node].CD_MUN
-        #     G.nodes[node]['UF'] = municipios.iloc[node].SIGLA_UF
-        #     G.nodes[node]['AREA'] = municipios.iloc[node].AREA_KM2
-        #     for col in one_hot.columns:
-        #         G.nodes[node][col] = int(one_hot.iloc[node][col])
 
     def _get_edge_weights(self):
         self._edge_weights = np.ones(self._edges.shape[1])

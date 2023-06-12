@@ -4,14 +4,10 @@ from setuptools.command.build_py import build_py as build_py_orig
 from setuptools.command.install import install as _install
 import os
 from pkg_resources import resource_filename
-import subprocess
-from cfg import *
 import logging
 
 class OverrideInstall(_install):
     def run(self):
-        print(bash_path)
-        # subprocess.run(["bash",f"{bash_path}"])    
         _install.run(self)
     
 excluded = ['Tests/*.ipynb']
