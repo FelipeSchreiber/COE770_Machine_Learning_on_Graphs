@@ -15,7 +15,7 @@ class RecurrentGCN(torch.nn.Module):
     def forward(self, x, edge_index, edge_weight):
         #,A_h,A_z,A_r 
         h,A = self.recurrent(x, edge_index, edge_weight)
-        h = NN.PReLU(h)
+        h = F.relu(h)
         h = self.linear(h)
         return h,A
     
