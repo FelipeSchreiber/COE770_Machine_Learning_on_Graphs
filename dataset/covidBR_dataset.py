@@ -8,6 +8,7 @@ import geopandas as gpd
 import numpy as np
 import gdown
 from tqdm import tqdm
+import torch
 from torch_geometric_temporal.signal import StaticGraphTemporalSignal, StaticGraphTemporalSignalBatch
 
 class CovidDatasetLoader(object):
@@ -123,13 +124,18 @@ class CovidDatasetLoader(object):
         Return types:
             * **dataset** *(StaticGraphTemporalSignal)* - The PedalMe dataset.
         """
-        self.lags = lags
-        self._get_edges()
-        #self._get_edge_weights()
-        self._get_targets_and_features()
-        dataset = StaticGraphTemporalSignal(
-            self._edges,  self._edge_weights, self.features, self.targets
-        )
+        dataset = None
+        if (not os.path.isfile('covid.data')):
+            self.lags = lags
+            self._get_edges()
+            #self._get_edge_weights()
+            self._get_targets_and_features()
+            dataset = StaticGraphTemporalSignal(
+                self._edges,  self._edge_weights, self.features, self.targets
+            )
+            torch.save(dataset, 'covid.data')
+        else:
+            dataset = torch.load('covid.data')
         return dataset
     
     def get_dataset_batch(self, lags: int = 4, batch_size: int = 16) -> StaticGraphTemporalSignalBatch:
