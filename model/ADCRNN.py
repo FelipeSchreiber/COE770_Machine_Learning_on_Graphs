@@ -60,9 +60,6 @@ class ADConv(MessagePassing):
         """
         adj_mat = to_dense_adj(edge_index, edge_attr=edge_weight)
         adj_mat = adj_mat.reshape(adj_mat.size(1), adj_mat.size(2))
-        print(X.shape,type(X))
-        self.residual_matrix = NN.Softmax(NN.PReLU(torch.mm(X, X.transpose(0, 1))), dim=1)
-        adj_mat += self.residual_matrix
         deg_out = torch.matmul(
             adj_mat, torch.ones(size=(adj_mat.size(0), 1)).to(X.device)
         )
@@ -137,7 +134,7 @@ class ADCRNN(torch.nn.Module):
         self.out_channels = out_channels
         self.K = K
         self.bias = bias
-
+        self.residual_matrix = None
         self._create_parameters_and_layers()
 
     def _create_update_gate_parameters_and_layers(self):
@@ -217,8 +214,16 @@ class ADCRNN(torch.nn.Module):
             * **H** (PyTorch Float Tensor) - Hidden state matrix for all nodes.
         """
         H = self._set_hidden_state(X, H)
-        Z = self._calculate_update_gate(X, edge_index, edge_weight, H)
-        R = self._calculate_reset_gate(X, edge_index, edge_weight, H)
-        H_tilde = self._calculate_candidate_state(X, edge_index, edge_weight, H, R)
+        
+        adj_mat = to_dense_adj(edge_index, edge_attr=edge_weight)
+        adj_mat = adj_mat.reshape(adj_mat.size(1), adj_mat.size(2))
+        self.residual_matrix = NN.Softmax(NN.PReLU(torch.mm(X, X.transpose(0, 1))), dim=1)
+        
+        adj_mat += self.residual_matrix
+        edge_index_, edge_weight_ = dense_to_sparse(adj_mat)
+
+        Z = self._calculate_update_gate(X, edge_index_, edge_weight_, H)
+        R = self._calculate_reset_gate(X, edge_index_, edge_weight_, H)
+        H_tilde = self._calculate_candidate_state(X, edge_index_, edge_weight_, H, R)
         H = self._calculate_hidden_state(Z, H, H_tilde)
-        return H, self.conv_x_h.residual_matrix, self.conv_x_z.residual_matrix, self.conv_x_r.residual_matrix
+        return H, self.residual_matrix
