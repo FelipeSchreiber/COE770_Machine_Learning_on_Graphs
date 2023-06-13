@@ -34,7 +34,7 @@ class CovidBenchmark():
         num_feats = dataset[0].x.shape[1]
 
         if train_model:
-            model = RecurrentGCN(num_features = num_feats, num_filters = filter_size).to(device)
+            model = RecurrentGCN(num_features = num_feats,out_channels = 5,num_filters = filter_size).to(device)
             optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
             model.train()
 
@@ -49,7 +49,7 @@ class CovidBenchmark():
                     optimizer.zero_grad()
                     del snapshot
                     self.free_cache()
-                    self.check_mem()
+                    # self.check_mem()
                 if epoch % 10 == 0:
                     torch.save(model.state_dict(), "./model_weights_ADCRNN")
             torch.save(model, "./the_whole_model_ADCRNN")

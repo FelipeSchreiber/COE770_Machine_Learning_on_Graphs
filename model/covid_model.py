@@ -1,23 +1,39 @@
 import torch
-import torch.nn
+from torch import nn
 import torch.nn.functional as F
 from torch_geometric_temporal.nn.recurrent import DCRNN
 from .ADCRNN import ADCRNN
 import gdown
 import os
 
+class MLP(nn.Module):
+    def __init__(self,num_input=35,hidden_output=100,num_output=5):
+        super(MLP, self).__init__()
+        self.layers = nn.Sequential(
+            nn.Linear(num_input, hidden_output),
+            nn.PReLU(),
+            nn.Linear(hidden_output, num_output),
+            nn.PReLU()
+        )
+        
+    def forward(self, x):
+        x = self.layers(x)
+        return x
+
+
 class RecurrentGCN(torch.nn.Module):
-    def __init__(self, num_features=35,num_filters=3):
+    def __init__(self,num_features=35,out_channels = 5,num_filters=3):
         super(RecurrentGCN, self).__init__()
-        out_channels = 5
-        self.recurrent = ADCRNN(in_channels = num_features, out_channels = out_channels,\
+        self.preprocess = MLP(num_input = num_features,hidden_output=100, num_output=out_channels)
+        self.recurrent = ADCRNN(in_channels = out_channels, out_channels = out_channels,\
                   K = num_filters, bias = True)
 
         self.linear = torch.nn.Linear(out_channels, 1)
 
     def forward(self, x, edge_index, edge_weight):
-        h,A = self.recurrent(x, edge_index, edge_weight)
-        # h,_ = self.recurrent(x, edge_index, edge_weight, h, A)
+        h = self.preprocess(x)
+        h,A = self.recurrent(x, edge_index, edge_weight, h)
+        h,_ = self.recurrent(x, edge_index, edge_weight, h, A)
         h = self.linear(h)
         h = F.relu(h)
         return h,A
