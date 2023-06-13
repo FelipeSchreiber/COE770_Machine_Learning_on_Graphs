@@ -73,3 +73,4 @@ class CovidBenchmark():
                 del snapshot
                 self.free_cache()
             stats["MSE"].append(cost)
+        return stats
