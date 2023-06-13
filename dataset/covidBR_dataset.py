@@ -57,7 +57,7 @@ class CovidDatasetLoader(object):
             edge_data['weight'] = np.linalg.norm(centroids[src] - centroids[dest])
         G = G.to_undirected()
         print("IS DIRECTED: ",nx.is_directed(G))
-        G = nx.stochastic_graph(G)
+        nx.stochastic_graph(G, copy=False)
         self._edges = np.array(G.edges).T
         self._edge_weights = np.array([w['weight'] for u, v, w in G.edges(data=True)])
         self.static_feat = np.hstack([centroids,one_hot,lenghts,areas])
