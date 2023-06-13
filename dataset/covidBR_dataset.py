@@ -56,7 +56,6 @@ class CovidDatasetLoader(object):
         for src,dest,edge_data in G.edges.data():
             edge_data['weight'] = np.linalg.norm(centroids[src] - centroids[dest])
         G = G.to_directed()
-        print("IS DIRECTED: ",nx.is_directed(G))
         nx.stochastic_graph(G, copy=False)
         self._edges = np.array(G.edges).T
         self._edge_weights = np.array([w['weight'] for u, v, w in G.edges(data=True)])
@@ -107,7 +106,7 @@ class CovidDatasetLoader(object):
             for i in range(stacked_target.shape[1] - self.lags)
         ]
 
-    def get_dataset(self, lags: int = 4) -> StaticGraphTemporalSignal:
+    def get_dataset(self, lags: int = 4, from_drive = True) -> StaticGraphTemporalSignal:
         """
         Args types:
             * **lags** *(int)* - The number of time lags.
@@ -115,6 +114,11 @@ class CovidDatasetLoader(object):
             * **dataset** *(StaticGraphTemporalSignal)* - The PedalMe dataset.
         """
         dataset = None
+        if from_drive:
+            url = "https://drive.google.com/uc?export=download&id=141pexJ02xzG9spi-QsepavTmsjDdLg6D"
+            output = "covid.data"
+            gdown.download(url, output)
+            
         if (not os.path.isfile('covid.data')):
             self.lags = lags
             self._get_edges()
