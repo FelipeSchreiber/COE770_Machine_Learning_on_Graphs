@@ -200,7 +200,7 @@ class ADCRNN(torch.nn.Module):
         edge_index: torch.LongTensor,
         edge_weight: torch.FloatTensor = None,
         H: torch.FloatTensor = None,
-        residual_matrix = None
+        residual_matrix = None,
     ) -> torch.FloatTensor:
         r"""Making a forward pass. If edge weights are not present the forward pass
         defaults to an unweighted graph. If the hidden state matrix is not present
