@@ -1,4 +1,5 @@
 import torch
+from itertools import product
 import gc
 from dataset.covidBR_dataset import *
 from model.covid_model import *
