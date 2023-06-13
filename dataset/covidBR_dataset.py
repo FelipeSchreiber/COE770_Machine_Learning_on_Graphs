@@ -55,6 +55,7 @@ class CovidDatasetLoader(object):
         G = nx.relabel_nodes(G,lambda x: int(x))
         for src,dest,edge_data in G.edges.data():
             edge_data['weight'] = np.linalg.norm(centroids[src] - centroids[dest])
+        G = nx.stochastic_graph(G)
         self._edges = np.array(G.edges).T
         self._edge_weights = np.array([w['weight'] for u, v, w in G.edges(data=True)])
         self.static_feat = np.hstack([centroids,one_hot,lenghts,areas])
