@@ -11,9 +11,9 @@ class MLP(nn.Module):
         super(MLP, self).__init__()
         self.layers = nn.Sequential(
             nn.Linear(num_input, hidden_output),
-            nn.PReLU(),
+            nn.ReLU(),
             nn.Linear(hidden_output, num_output),
-            nn.PReLU()
+            nn.ReLU()
         )
         
     def forward(self, x):
@@ -33,7 +33,7 @@ class RecurrentGCN(torch.nn.Module):
     def forward(self, x, edge_index, edge_weight):
         h = self.preprocess(x)
         h,A = self.recurrent(h, edge_index, edge_weight)
-        # h,_ = self.recurrent(x, edge_index, edge_weight, h, A)
+        h,_ = self.recurrent(h, edge_index, edge_weight,residual_matrix=A)
         h = self.linear(h)
         h = F.relu(h)
         return h,A

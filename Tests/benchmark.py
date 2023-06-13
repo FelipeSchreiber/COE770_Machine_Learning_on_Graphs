@@ -48,7 +48,7 @@ class CovidBenchmark():
                     optimizer.step()
                     optimizer.zero_grad()
                     del snapshot
-                    self.free_cache()
+                    # self.free_cache()
                     # self.check_mem()
                 if epoch % 10 == 0:
                     torch.save(model.state_dict(), "./model_weights_ADCRNN")
