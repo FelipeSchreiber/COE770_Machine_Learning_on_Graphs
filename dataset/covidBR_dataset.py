@@ -53,9 +53,9 @@ class CovidDatasetLoader(object):
 
         G = queen.to_networkx()
         G = nx.relabel_nodes(G,lambda x: int(x))
-        # for src,dest,edge_data in G.edges.data():
-        #     edge_data['weight'] = np.linalg.norm(centroids[src] - centroids[dest])
-        G = G.to_undirected()
+        for src,dest,edge_data in G.edges.data():
+            edge_data['weight'] = np.linalg.norm(centroids[src] - centroids[dest])
+        G = G.to_directed()
         print("IS DIRECTED: ",nx.is_directed(G))
         nx.stochastic_graph(G, copy=False)
         self._edges = np.array(G.edges).T
