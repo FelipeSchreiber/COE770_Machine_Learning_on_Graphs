@@ -27,7 +27,7 @@ class CovidBenchmark():
         gc.collect()
         torch.cuda.empty_cache()
 
-    def run_test(self,lags=4,filter_sizes=[4,8,16],train_model=True,gammas=[1,1e4,1e8],num_epochs=100):
+    def run_test(self,lags=4,filter_sizes=[16,8,4],train_model=True,gammas=[1,1e4,1e6,1e8],num_epochs=100):
         loader = CovidDatasetLoader(method="other")
         dataset = loader.get_dataset(lags=lags)
         train_dataset, test_dataset = temporal_signal_split(dataset, train_ratio=0.8)

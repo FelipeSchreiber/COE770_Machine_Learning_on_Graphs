@@ -31,12 +31,12 @@ class RecurrentGCN(torch.nn.Module):
         self.linear = torch.nn.Linear(out_channels, 1)
 
     def forward(self, x, edge_index, edge_weight):
-        h = self.preprocess(x)
-        h,A = self.recurrent(h, edge_index, edge_weight)
-        # h,_ = self.recurrent(h, edge_index, edge_weight,residual_matrix=A)
-        h = self.linear(h)
-        h = F.relu(h)
-        return h,A
+        h_1 = self.preprocess(x)
+        h_2,A = self.recurrent(h_1, edge_index, edge_weight)
+        h_3,_ = self.recurrent(h_2, edge_index, edge_weight,residual_matrix=A)
+        h_4 = self.linear(h_1+h_2+h_3)
+        y = F.relu(h_4)
+        return y,A
     
 def get_model(get_whole_model=True,num_features=35,num_filters=3):
     if get_whole_model:
