@@ -127,7 +127,8 @@ class ADCRNN(torch.nn.Module):
 
     """
 
-    def __init__(self, in_channels: int, out_channels: int, K: int, bias: bool = True):
+    def __init__(self, in_channels: int, out_channels: int,\
+                  K: int, bias: bool = True):
         super(ADCRNN, self).__init__()
 
         self.in_channels = in_channels
@@ -199,6 +200,7 @@ class ADCRNN(torch.nn.Module):
         edge_index: torch.LongTensor,
         edge_weight: torch.FloatTensor = None,
         H: torch.FloatTensor = None,
+        residual_matrix = None
     ) -> torch.FloatTensor:
         r"""Making a forward pass. If edge weights are not present the forward pass
         defaults to an unweighted graph. If the hidden state matrix is not present
@@ -217,9 +219,12 @@ class ADCRNN(torch.nn.Module):
         
         adj_mat = to_dense_adj(edge_index, edge_attr=edge_weight)
         adj_mat = adj_mat.reshape(adj_mat.size(1), adj_mat.size(2))
-        matrix_sim = torch.mm(H, H.transpose(0, 1))
-        self.residual_matrix = F.softmax(F.relu(matrix_sim), dim=1)
-        
+        if residual_matrix is None:
+            matrix_sim = torch.mm(H, H.transpose(0, 1))
+            self.residual_matrix = F.softmax(F.relu(matrix_sim), dim=1)
+        else:
+            self.residual_matrix = residual_matrix
+            
         adj_mat += self.residual_matrix
         edge_index_, edge_weight_ = dense_to_sparse(adj_mat)
 
