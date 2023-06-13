@@ -27,44 +27,49 @@ class CovidBenchmark():
         gc.collect()
         torch.cuda.empty_cache()
 
-    def run_test(self,lags=4,filter_size=3,train_model=True,gamma=1,num_epochs=100):
+    def run_test(self,lags=4,filter_sizes=[4,8,16],train_model=True,gammas=[1,1e4,1e8],num_epochs=100):
         loader = CovidDatasetLoader(method="other")
         dataset = loader.get_dataset(lags=lags)
         train_dataset, test_dataset = temporal_signal_split(dataset, train_ratio=0.8)
         num_feats = dataset[0].x.shape[1]
+        stats = {"MSE":[],"gamma":[],"filter_size":[]}
+        
+        for filter_size, gamma in tqdm(product(filter_sizes,gammas)):
+            stats["gamma"].append(gamma)
+            stats["filter_size"].append(filter_size)
+            if train_model:
+                model = RecurrentGCN(num_features = num_feats,out_channels = 5,num_filters = filter_size).to(device)
+                optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+                model.train()
 
-        if train_model:
-            model = RecurrentGCN(num_features = num_feats,out_channels = 5,num_filters = filter_size).to(device)
-            optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
-            model.train()
+                for epoch in tqdm(range(num_epochs)):
+                    for time, snapshot in enumerate(train_dataset):
+                        snapshot.to(device)
+                        y_hat,A  = model(snapshot.x, snapshot.edge_index, snapshot.edge_attr)
+                        cost = torch.mean((y_hat-snapshot.y)**2)\
+                        + gamma*torch.norm(A,p=1)
+                        cost.backward()
+                        optimizer.step()
+                        optimizer.zero_grad()
+                        del snapshot
+                        # self.free_cache()
+                        # self.check_mem()
+                    if epoch % 10 == 0:
+                        torch.save(model.state_dict(), "./model_weights_ADCRNN")
+                torch.save(model, "./the_whole_model_ADCRNN")
+                self.free_cache()
+            else:
+                model = get_model(False)
+                model.to(device)
 
-            for epoch in tqdm(range(num_epochs)):
-                for time, snapshot in enumerate(train_dataset):
-                    snapshot.to(device)
-                    y_hat,A  = model(snapshot.x, snapshot.edge_index, snapshot.edge_attr)
-                    cost = torch.mean((y_hat-snapshot.y)**2)\
-                    + gamma*torch.norm(A,p=1)
-                    cost.backward()
-                    optimizer.step()
-                    optimizer.zero_grad()
-                    del snapshot
-                    # self.free_cache()
-                    # self.check_mem()
-                if epoch % 10 == 0:
-                    torch.save(model.state_dict(), "./model_weights_ADCRNN")
-            torch.save(model, "./the_whole_model_ADCRNN")
-            self.free_cache()
-        else:
-            model = get_model(False)
-            model.to(device)
+            model.eval()
+            cost = 0
 
-        model.eval()
-        cost = 0
-
-        for time, snapshot in enumerate(test_dataset):
-            snapshot.to(device)
-            y_hat,_ = model(snapshot.x, snapshot.edge_index, snapshot.edge_attr)
-            cost = cost + torch.mean((y_hat-snapshot.y)**2).item()
-            cost = cost / (time+1)
-            del snapshot
-            self.free_cache()
+            for time, snapshot in enumerate(test_dataset):
+                snapshot.to(device)
+                y_hat,_ = model(snapshot.x, snapshot.edge_index, snapshot.edge_attr)
+                cost = cost + torch.mean((y_hat-snapshot.y)**2).item()
+                cost = cost / (time+1)
+                del snapshot
+                self.free_cache()
+            stats["MSE"].append(cost)
