@@ -13,7 +13,6 @@ class MLP(nn.Module):
             nn.Linear(num_input, hidden_output),
             nn.ReLU(),
             nn.Linear(hidden_output, num_output),
-            nn.ReLU()
         )
         
     def forward(self, x):
@@ -27,13 +26,14 @@ class RecurrentGCN(torch.nn.Module):
         self.preprocess = MLP(num_input = num_features,hidden_output=100, num_output=out_channels)
         self.recurrent = ADCRNN(in_channels = out_channels, out_channels = out_channels,\
                   K = num_filters, bias = True)
-
+        # self.recurrent_second = ADCRNN(in_channels = out_channels, out_channels = 1,\
+        #           K = num_filters, bias = True)
         self.linear = torch.nn.Linear(out_channels, 1)
 
     def forward(self, x, edge_index, edge_weight):
         h = self.preprocess(x)
         h,A = self.recurrent(h, edge_index, edge_weight)
-        h,_ = self.recurrent(h, edge_index, edge_weight,residual_matrix=A)
+        # h,_ = self.recurrent(h, edge_index, edge_weight,residual_matrix=A)
         h = self.linear(h)
         h = F.relu(h)
         return h,A
