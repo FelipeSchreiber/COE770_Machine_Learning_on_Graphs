@@ -34,8 +34,8 @@ class RecurrentGCN(torch.nn.Module):
         # h_1 = self.MLP(x)
         h_2,A = self.recurrent(x, edge_index, edge_weight)
         # h_3,_ = self.recurrent(x, edge_index, edge_weight, H=h_2, residual_matrix=A)
-        h_4 = self.linear(h_2)
-        y = F.relu(h_4)
+        h_4 = F.relu(h_2)
+        y = self.linear(h_4)
         return y,A
     
 def get_model(get_whole_model=True,num_features=35,num_filters=3):
