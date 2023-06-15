@@ -5,6 +5,7 @@ from torch_geometric_temporal.nn.recurrent import DCRNN
 from .ADCRNN import ADCRNN
 import gdown
 import os
+from google.colab import drive
 
 class MLP(nn.Module):
     def __init__(self,num_input=35,hidden_output=100,num_output=5):
@@ -38,7 +39,7 @@ class RecurrentGCN(torch.nn.Module):
         y = self.linear(h_4)
         return y,A
     
-def get_model(get_whole_model=True,num_features=35,num_filters=3):
+def get_model(get_whole_model=True,num_features=35,num_filters=3,gamma=1):
     if get_whole_model:
         url = "https://drive.google.com/uc?export=download&id=1XYICNGVXOEqazVJmfEfxlLiy7QoNeQzs"
         output = "covid_model"
@@ -46,10 +47,13 @@ def get_model(get_whole_model=True,num_features=35,num_filters=3):
         cwd = os.getcwd()+"/"
         return torch.load(cwd+output)
     else:
-        url = "https://drive.google.com/uc?export=download&id=1skGodpbZZhuDyvxJbicnIe8ed9d0w5iN"
-        output = "covid_model_weights"
+        url = "https://drive.google.com/drive/folders/1V8CaUUS3gPQAcRE2YebNkqWOWKRA7vmt?usp=sharing"
+        output = "COE770_GNN/"
+        model_name = f"model_weights_ADCRNN_{num_filters}_{gamma}"
+        # url = "https://drive.google.com/uc?export=download&id=1skGodpbZZhuDyvxJbicnIe8ed9d0w5iN"
+        # output = "covid_model_weights"
         gdown.download(url, output)
         cwd = os.getcwd()+"/"
         covid_model = RecurrentGCN(num_features=num_features,num_filters=num_filters)
-        covid_model.load_state_dict(torch.load(cwd+output))
+        covid_model.load_state_dict(torch.load(cwd+output+model_name))
         return covid_model

@@ -5,6 +5,7 @@ from dataset.covidBR_dataset import *
 from model.covid_model import *
 from torch_geometric_temporal.signal import temporal_signal_split
 from tqdm import tqdm
+import shutil
 
 device = "cpu"
 dtype = torch.FloatTensor
@@ -56,11 +57,15 @@ class CovidBenchmark():
                         # self.free_cache()
                         # self.check_mem()
                     if epoch % 10 == 0:
-                        torch.save(model.state_dict(), "./model_weights_ADCRNN")
-                torch.save(model, "./the_whole_model_ADCRNN")
+                        torch.save(model.state_dict(), f"./model_weights_ADCRNN_{filter_size}_{gamma}")
+                        #url = "https://drive.google.com/drive/folders/1V8CaUUS3gPQAcRE2YebNkqWOWKRA7vmt?usp=sharing"
+                        #output = "COE770_GNN/"
+                        shutil.copy(f"./model_weights_ADCRNN_{filter_size}_{gamma}",\
+                                    "/content/drive/MyDrive/COE770_GNN/")
+                torch.save(model, f"./the_whole_model_ADCRNN_{filter_size}_{gamma}")
                 self.free_cache()
             else:
-                model = get_model(False)
+                model = get_model(False,num_features=35,num_filters=filter_size,gamma=gamma)
                 model.to(device)
 
             model.eval()
