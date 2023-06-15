@@ -10,9 +10,9 @@ class MLP(nn.Module):
     def __init__(self,num_input=35,hidden_output=100,num_output=5):
         super(MLP, self).__init__()
         self.layers = nn.Sequential(
-            nn.Linear(num_input, num_output),
-            nn.PReLU()
-            # nn.Linear(hidden_output, num_output),
+            nn.Linear(num_input, hidden_output),
+            nn.PReLU(),
+            nn.Linear(hidden_output, num_output),
         )
         
     def forward(self, x):
