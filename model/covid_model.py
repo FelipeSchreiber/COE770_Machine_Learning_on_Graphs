@@ -28,13 +28,13 @@ class RecurrentGCN(torch.nn.Module):
                   K = num_filters, bias = True)
         # self.recurrent_second = ADCRNN(in_channels = out_channels, out_channels = 1,\
         #           K = num_filters, bias = True)
-        self.linear = torch.nn.Linear(out_channels, 1)
+        self.linear = torch.nn.Linear(2*out_channels, 1)
 
     def forward(self, x, edge_index, edge_weight):
-        h_1 = self.MLP(x)
-        h_2,A = self.recurrent(h_1, edge_index, edge_weight)
-        # h_3,_ = self.recurrent(h_2, edge_index, edge_weight,residual_matrix=A)
-        h_4 = self.linear(h_1+h_2)
+        # h_1 = self.MLP(x)
+        h_2,A = self.recurrent(x, edge_index, edge_weight)
+        h_3,_ = self.recurrent(h_2, edge_index, edge_weight,residual_matrix=A)
+        h_4 = self.linear(torch.hstack([h_2,h_3]))
         y = F.relu(h_4)
         return y,A
     
