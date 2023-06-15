@@ -5,7 +5,6 @@ from torch_geometric_temporal.nn.recurrent import DCRNN
 from .ADCRNN import ADCRNN
 import gdown
 import os
-from google.colab import drive
 
 class MLP(nn.Module):
     def __init__(self,num_input=35,hidden_output=100,num_output=5):
@@ -52,8 +51,10 @@ def get_model(get_whole_model=True,num_features=35,num_filters=3,gamma=1):
         model_name = f"model_weights_ADCRNN_{num_filters}_{gamma}"
         # url = "https://drive.google.com/uc?export=download&id=1skGodpbZZhuDyvxJbicnIe8ed9d0w5iN"
         # output = "covid_model_weights"
+        # cwd+output+model_name
+        gdrive_path = "/content/drive/MyDrive/COE770_GNN/"
         gdown.download(url, output)
         cwd = os.getcwd()+"/"
         covid_model = RecurrentGCN(num_features=num_features,num_filters=num_filters)
-        covid_model.load_state_dict(torch.load(cwd+output+model_name))
+        covid_model.load_state_dict(torch.load(gdrive_path+model_name))
         return covid_model

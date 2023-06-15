@@ -7,6 +7,7 @@ from torch_geometric_temporal.signal import temporal_signal_split
 from tqdm import tqdm
 import shutil
 
+gdrive_path = "/content/drive/MyDrive/COE770_GNN/"
 device = "cpu"
 dtype = torch.FloatTensor
 if torch.cuda.is_available():
@@ -58,10 +59,11 @@ class CovidBenchmark():
                         # self.check_mem()
                     if epoch % 10 == 0:
                         torch.save(model.state_dict(), f"./model_weights_ADCRNN_{filter_size}_{gamma}")
+                        torch.save(model.state_dict(), gdrive_path+f"model_weights_ADCRNN_{filter_size}_{gamma}")
                         #url = "https://drive.google.com/drive/folders/1V8CaUUS3gPQAcRE2YebNkqWOWKRA7vmt?usp=sharing"
                         #output = "COE770_GNN/"
-                        shutil.copy(f"./model_weights_ADCRNN_{filter_size}_{gamma}",\
-                                    "/content/drive/MyDrive/COE770_GNN/")
+                        # shutil.copy(f"./model_weights_ADCRNN_{filter_size}_{gamma}",\
+                        #             "/content/drive/MyDrive/COE770_GNN/")
                 torch.save(model, f"./the_whole_model_ADCRNN_{filter_size}_{gamma}")
                 self.free_cache()
             else:
