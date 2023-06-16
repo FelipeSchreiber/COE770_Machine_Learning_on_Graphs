@@ -150,7 +150,7 @@ class CovidBenchmark():
 
             for time, snapshot in enumerate(test_dataset):
                 snapshot.to(device)
-                y_hat,_ = model(snapshot.x, snapshot.edge_index, snapshot.edge_attr)
+                y_hat = model(snapshot.x, snapshot.edge_index, snapshot.edge_attr)
                 cost = cost + torch.mean((y_hat-snapshot.y)**2).item()
                 cost = cost / (time+1)
                 del snapshot
