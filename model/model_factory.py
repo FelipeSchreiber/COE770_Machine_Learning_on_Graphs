@@ -20,6 +20,8 @@ def make_layers(num_feats,output,filter_size=2):
               GCLSTM(num_feats, output, filter_size)]
     return layers
 
+model_names = ["DCRNN","AGCRN","MPNNLSTM","A3TGCN","TGCN","GConvGRU","GConvLSTM","GCLSTM"]
+
 class MLP(nn.Module):
     def __init__(self,num_input=35,hidden_output=100,num_output=5):
         super(MLP, self).__init__()
