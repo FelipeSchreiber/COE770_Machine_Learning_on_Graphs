@@ -53,7 +53,7 @@ def get_model(get_whole_model=True,num_features=35,num_filters=3,gamma=1):
         # output = "covid_model_weights"
         # cwd+output+model_name
         gdrive_path = "/content/drive/MyDrive/COE770_GNN/"
-        gdown.download(url, output)
+        # gdown.download(url, output)
         cwd = os.getcwd()+"/"
         covid_model = RecurrentGCN(num_features=num_features,num_filters=num_filters)
         covid_model.load_state_dict(torch.load(gdrive_path+model_name))
