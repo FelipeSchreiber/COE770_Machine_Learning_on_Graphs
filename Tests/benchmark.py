@@ -5,7 +5,8 @@ from dataset.covidBR_dataset import *
 from model.covid_model import *
 from torch_geometric_temporal.signal import temporal_signal_split
 from tqdm import tqdm
-import shutil
+# import shutil
+import os
 
 gdrive_path = "/content/drive/MyDrive/COE770_GNN/"
 device = "cpu"
@@ -67,6 +68,7 @@ class CovidBenchmark():
                         # self.free_cache()
                         # self.check_mem()
                     if epoch % 10 == 0:
+                        os.remove(f"./model_weights_ADCRNN_{filter_size}_{gamma}")
                         torch.save(model.state_dict(), f"./model_weights_ADCRNN_{filter_size}_{gamma}")
                         torch.save(model.state_dict(), gdrive_path+f"model_weights_ADCRNN_{filter_size}_{gamma}")
                         #url = "https://drive.google.com/drive/folders/1V8CaUUS3gPQAcRE2YebNkqWOWKRA7vmt?usp=sharing"
