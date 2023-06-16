@@ -66,7 +66,7 @@ class CovidBenchmark():
                         #output = "COE770_GNN/"
                         # shutil.copy(f"./model_weights_ADCRNN_{filter_size}_{gamma}",\
                         #             "/content/drive/MyDrive/COE770_GNN/")
-                torch.save(model, f"./the_whole_model_ADCRNN_{filter_size}_{gamma}")
+                #torch.save(model, f"./the_whole_model_ADCRNN_{filter_size}_{gamma}")
                 self.free_cache()
             else:
                 model = get_model(False,num_features=35,num_filters=filter_size,gamma=gamma)
