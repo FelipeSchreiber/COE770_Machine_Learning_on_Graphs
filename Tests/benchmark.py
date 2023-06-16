@@ -30,7 +30,9 @@ class CovidBenchmark():
         gc.collect()
         torch.cuda.empty_cache()
 
-    def run_test(self,lags=4,filter_sizes=[16,8,4],train_model=True,gammas=[1,1e4,1e6,1e8],num_epochs=100):
+    def run_test(self,lags=4,filter_sizes=[16,8,4],\
+                 train_model=True,gammas=[1,1e4,1e6,1e8],\
+                 num_epochs=100,warm_start=True):
         loader = CovidDatasetLoader(method="other")
         dataset = loader.get_dataset(lags=lags)
         train_dataset, test_dataset = temporal_signal_split(dataset, train_ratio=0.8)
@@ -40,8 +42,15 @@ class CovidBenchmark():
         for filter_size, gamma in tqdm(product(filter_sizes,gammas)):
             stats["gamma"].append(gamma)
             stats["filter_size"].append(filter_size)
+            model = None
             if train_model:
-                model = RecurrentGCN(num_features = num_feats,out_channels = 5,num_filters = filter_size).to(device)
+                if not warm_start:
+                    model = RecurrentGCN(num_features = num_feats,\
+                                         out_channels = 5,\
+                                         um_filters = filter_size).to(device)
+                else:
+                    model = get_model(False,num_features=35,num_filters=filter_size,gamma=gamma)
+                    model.to(device)
                 optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
                 model.train()
 
