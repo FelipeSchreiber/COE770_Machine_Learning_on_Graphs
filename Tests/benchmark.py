@@ -68,9 +68,11 @@ class CovidBenchmark():
                         # self.free_cache()
                         # self.check_mem()
                     if epoch % 10 == 0:
-                        os.remove(f"./model_weights_ADCRNN_{filter_size}_{gamma}")
-                        torch.save(model.state_dict(), f"./model_weights_ADCRNN_{filter_size}_{gamma}")
-                        torch.save(model.state_dict(), gdrive_path+f"model_weights_ADCRNN_{filter_size}_{gamma}")
+                        filepath = f"./model_weights_ADCRNN_{filter_size}_{gamma}"
+                        if (os.path.isfile(filepath)):
+                            os.remove(filepath)
+                        torch.save(model.state_dict(), filepath)
+                        torch.save(model.state_dict(), gdrive_path+filepath)
                         #url = "https://drive.google.com/drive/folders/1V8CaUUS3gPQAcRE2YebNkqWOWKRA7vmt?usp=sharing"
                         #output = "COE770_GNN/"
                         # shutil.copy(f"./model_weights_ADCRNN_{filter_size}_{gamma}",\
