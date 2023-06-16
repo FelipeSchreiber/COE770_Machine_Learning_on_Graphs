@@ -48,18 +48,20 @@ class CovidBenchmark():
                 for epoch in tqdm(range(num_epochs)):
                     for time, snapshot in enumerate(train_dataset):
                         snapshot.to(device)
-                        y_hat,A  = model(snapshot.x, snapshot.edge_index, snapshot.edge_attr)
-                        cost = torch.mean((y_hat-snapshot.y)**2)\
-                        + gamma*torch.norm(A,p=1)
-                        cost.backward()
-                        optimizer.step()
-                        optimizer.zero_grad()
+                        # y_hat,A  = model(snapshot.x, snapshot.edge_index, snapshot.edge_attr)
+                        # cost = torch.mean((y_hat-snapshot.y)**2)\
+                        # + gamma*torch.norm(A,p=1)
+                        # cost.backward()
+                        # optimizer.step()
+                        # optimizer.zero_grad()
                         del snapshot
+                        
                         # self.free_cache()
                         # self.check_mem()
                     if epoch % 10 == 0:
-                        torch.save(model.state_dict(), f"./model_weights_ADCRNN_{filter_size}_{gamma}")
-                        torch.save(model.state_dict(), gdrive_path+f"model_weights_ADCRNN_{filter_size}_{gamma}")
+                        #torch.save(model.state_dict(), f"./model_weights_ADCRNN_{filter_size}_{gamma}")
+                        #torch.save(model.state_dict(), gdrive_path+f"model_weights_ADCRNN_{filter_size}_{gamma}")
+                        print("saving")
                         #url = "https://drive.google.com/drive/folders/1V8CaUUS3gPQAcRE2YebNkqWOWKRA7vmt?usp=sharing"
                         #output = "COE770_GNN/"
                         # shutil.copy(f"./model_weights_ADCRNN_{filter_size}_{gamma}",\
