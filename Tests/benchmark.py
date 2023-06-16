@@ -113,7 +113,7 @@ class CovidBenchmark():
             if train_model:
                 if warm_start:
                     model.load_state_dict(torch.load(gdrive_path+model_name))
-                    model.to(device)
+                model.to(device)
                 optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
                 model.train()
 
