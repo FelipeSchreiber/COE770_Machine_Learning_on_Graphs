@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 import torch.nn.functional as F
-from torchMY_Geometric_temporal.nn.recurrent import *
+from torch_geometric_temporal.nn.recurrent import *
 
 # def make_layers(num_feats,output,filter_size=2):
 #     layers = [DCRNN(num_feats, output, filter_size),\
