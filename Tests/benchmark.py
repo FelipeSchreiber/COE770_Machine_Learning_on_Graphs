@@ -47,9 +47,9 @@ class CovidBenchmark():
             model = None
             if train_model:
                 if not warm_start:
-                    model = RecurrentGCN(num_features = num_feats,\
+                    model = ADCRNN(num_features = num_feats,\
                                          out_channels = 5,\
-                                         um_filters = filter_size).to(device)
+                                         num_filters = filter_size).to(device)
                 else:
                     model = get_model(False,num_features=35,num_filters=filter_size,gamma=gamma)
                     model.to(device)
