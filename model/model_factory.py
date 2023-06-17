@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 import torch.nn.functional as F
-from torch_geometric_temporal.nn.recurrent import *
+from torchMY_Geometric_temporal.nn.recurrent import *
 
 # def make_layers(num_feats,output,filter_size=2):
 #     layers = [DCRNN(num_feats, output, filter_size),\
@@ -30,9 +30,9 @@ class MLP(nn.Module):
         x = self.layers(x)
         return x
     
-class _A3TGCN_(torch.nn.Module):
+class MY_A3TGCN_(torch.nn.Module):
     def __init__(self, node_features, output_size=32, periods = 4):
-        super(_A3TGCN_, self).__init__()
+        super(MY_A3TGCN_, self).__init__()
         self.recurrent = A3TGCN(node_features, output_size, periods)
         self.linear = torch.nn.Linear(output_size, 1)
 
@@ -42,9 +42,9 @@ class _A3TGCN_(torch.nn.Module):
         h = self.linear(h)
         return h
         
-class _AGCNRN_(torch.nn.Module):
+class MY_AGCNRN_(torch.nn.Module):
     def __init__(self, node_features = 35, output_size = 2, filter_size=2, num_nodes=5570):
-        super(_AGCNRN_, self).__init__()
+        super(MY_AGCNRN_, self).__init__()
         self.recurrent = AGCRN(number_of_nodes = num_nodes,
                               in_channels = node_features,
                               out_channels = output_size,
@@ -60,9 +60,9 @@ class _AGCNRN_(torch.nn.Module):
         self.h = h_0
         return y
 
-class _DCRNN_(torch.nn.Module):
+class MY_DCRNN_(torch.nn.Module):
     def __init__(self, node_features, output_size=32, filter_size=2):
-        super(_DCRNN_, self).__init__()
+        super(MY_DCRNN_, self).__init__()
         self.recurrent = DCRNN(node_features, output_size, K=filter_size)
         self.linear = torch.nn.Linear(output_size, 1)
 
@@ -72,9 +72,9 @@ class _DCRNN_(torch.nn.Module):
         h = self.linear(h)
         return h
         
-class  _GConvGRU_(torch.nn.Module):
+class  MY_GConvGRU_(torch.nn.Module):
     def __init__(self, node_features, output_size=32, filter_size=2):
-        super(_GConvGRU_, self).__init__()
+        super(MY_GConvGRU_, self).__init__()
         self.recurrent = GConvGRU(node_features, output_size, K = filter_size)
         self.linear = torch.nn.Linear(output_size, 1)
 
@@ -84,9 +84,9 @@ class  _GConvGRU_(torch.nn.Module):
         h = self.linear(h)
         return h
 
-class _GCLSTM_(torch.nn.Module):
+class MY_GCLSTM_(torch.nn.Module):
     def __init__(self, node_features,output_size, filter_size=2):
-        super(_GCLSTM_, self).__init__()
+        super(MY_GCLSTM_, self).__init__()
         self.recurrent = GCLSTM(node_features, output_size, filter_size)
         self.linear = torch.nn.Linear(output_size, 1)
         self.h = self.c = None
@@ -105,11 +105,11 @@ def make_models(layers:list,num_feats,output_size=32,filter_size=2):
     # for layer in layers:
     #     models.append(RecurrentGCN(layer,output_size))
     models = [
-            ##_A3TGCN_(node_features = num_feats, output_size = output_size),
-            #   _AGCNRN_(node_features = num_feats, output_size = output_size, filter_size=filter_size, num_nodes=5570),
-              _DCRNN_(node_features= num_feats, output_size=output_size, filter_size=filter_size),
-              _GConvGRU_(node_features= num_feats, output_size=output_size, filter_size=filter_size),
-              _GCLSTM_(node_features= num_feats, output_size=output_size, filter_size=filter_size)
+            ##MY_A3TGCN_(node_features = num_feats, output_size = output_size),
+            #   MY_AGCNRN_(node_features = num_feats, output_size = output_size, filter_size=filter_size, num_nodes=5570),
+              MY_DCRNN_(node_features= num_feats, output_size=output_size, filter_size=filter_size),
+              MY_GConvGRU_(node_features= num_feats, output_size=output_size, filter_size=filter_size),
+              MY_GCLSTM_(node_features= num_feats, output_size=output_size, filter_size=filter_size)
               ]
 
     return models
