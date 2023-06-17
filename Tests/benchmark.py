@@ -110,6 +110,7 @@ class CovidBenchmark():
         gdrive_path = "/content/drive/MyDrive/COE770_GNN/"
         ##model_names is defined in model_factory
         for model,model_name in zip(models,model_names):
+            print(model_name)
             if train_model:
                 if warm_start:
                     model.load_state_dict(torch.load(gdrive_path+model_name))
