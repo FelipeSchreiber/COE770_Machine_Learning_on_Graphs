@@ -166,6 +166,7 @@ class ADCRNN(torch.nn.Module):
         self._create_update_gate_parameters_and_layers()
         self._create_reset_gate_parameters_and_layers()
         self._create_candidate_state_parameters_and_layers()
+        self.PReLU_layer = F.prelu()
 
     def _set_hidden_state(self, X, H):
         if H is None:
@@ -221,7 +222,7 @@ class ADCRNN(torch.nn.Module):
         adj_mat = adj_mat.reshape(adj_mat.size(1), adj_mat.size(2))
         if residual_matrix is None:
             matrix_sim = torch.mm(H, H.transpose(0, 1))
-            self.residual_matrix = F.softmax(F.relu(matrix_sim), dim=1)
+            self.residual_matrix = F.tanh(self.PReLU_layer(matrix_sim), dim=1)
         else:
             self.residual_matrix = residual_matrix
             
