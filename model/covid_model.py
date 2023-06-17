@@ -29,10 +29,11 @@ class RecurrentGCN(torch.nn.Module):
         self.linear = torch.nn.Linear(out_channels, 1)
 
     def forward(self, x, edge_index, edge_weight):
-        h_1 = self.MLP(x)
+        h_1=None
+        # h_1 = self.MLP(x)
         h_2,A = self.recurrent(x, edge_index, edge_weight, H=h_1)
-        h_3,_ = self.recurrent(x, edge_index, edge_weight, H=h_2, residual_matrix=A)
-        h_4 = F.relu(h_3)
+        # h_3,_ = self.recurrent(x, edge_index, edge_weight, H=h_2, residual_matrix=A)
+        h_4 = F.relu(h_2)
         y = self.linear(h_4)
         return y,A
     

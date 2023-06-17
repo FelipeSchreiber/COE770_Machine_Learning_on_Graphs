@@ -222,7 +222,7 @@ class ADCRNN(torch.nn.Module):
         adj_mat = adj_mat.reshape(adj_mat.size(1), adj_mat.size(2))
         if residual_matrix is None:
             matrix_sim = torch.mm(H, H.transpose(0, 1))
-            self.residual_matrix = F.sigmoid(F.relu(matrix_sim))
+            self.residual_matrix = F.tanh(F.relu(matrix_sim))
         else:
             self.residual_matrix = residual_matrix
             
