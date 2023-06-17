@@ -53,7 +53,7 @@ class _AGCNRN_(torch.nn.Module):
         self.h = None
         self.linear = torch.nn.Linear(2, 1)
 
-    def forward(self, x, e):
+    def forward(self, x, e, w):
         h_0 = self.recurrent(x, e, self.h)
         y = F.relu(h_0)
         y = self.linear(y)
