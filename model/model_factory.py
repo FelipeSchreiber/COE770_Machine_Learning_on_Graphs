@@ -13,7 +13,7 @@ def make_layers(num_feats,output,filter_size=2):
     layers = [DCRNN(num_feats, output, filter_size),\
               ## to correct embedding dim
             #   AGCRN(5570,num_feats, output, filter_size, embedding_dimensions = 32),\
-              MPNNLSTM(num_feats, output, 5570, 1, 0.5),\
+            #   MPNNLSTM(num_feats, output, 5570, 1, 0.5),\
               A3TGCN(num_feats, output, periods = 1),\
               TGCN(num_feats, output),\
               GConvGRU(num_feats, output, filter_size),\
