@@ -106,8 +106,8 @@ def make_models(layers:list,num_feats,output_size=32,filter_size=2):
     # for layer in layers:
     #     models.append(RecurrentGCN(layer,output_size))
     models = [
-            ##MY_A3TGCN_(node_features = num_feats, output_size = output_size),
-            #   MY_AGCNRN_(node_features = num_feats, output_size = output_size, filter_size=filter_size, num_nodes=5570),
+              MY_A3TGCN_(node_features = num_feats, output_size = output_size),
+              MY_AGCNRN_(node_features = num_feats, output_size = output_size, filter_size=filter_size, num_nodes=5570),
               MY_DCRNN_(node_features= num_feats, output_size=output_size, filter_size=filter_size),
               MY_GConvGRU_(node_features= num_feats, output_size=output_size, filter_size=filter_size),
               MY_GCLSTM_(node_features= num_feats, output_size=output_size, filter_size=filter_size)
