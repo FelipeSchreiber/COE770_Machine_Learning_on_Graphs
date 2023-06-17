@@ -15,7 +15,8 @@ from torch_geometric_temporal.nn.recurrent import *
 #               GCLSTM(num_feats, output, filter_size)]
 #     return layers
 
-model_names = ["DCRNN","AGCRN","MPNNLSTM","A3TGCN","TGCN","GConvGRU","GConvLSTM","GCLSTM"]
+#model_names = ["DCRNN","AGCRN","MPNNLSTM","A3TGCN","TGCN","GConvGRU","GConvLSTM","GCLSTM"]
+model_name = ["DCRNN","GConvGRU","GCLSTM"]
 
 class MLP(nn.Module):
     def __init__(self,num_input=35,hidden_output=100,num_output=5):
