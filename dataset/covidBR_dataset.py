@@ -54,7 +54,7 @@ class CovidDatasetLoader(object):
         G = queen.to_networkx()
         G = nx.relabel_nodes(G,lambda x: int(x))
         for src,dest,edge_data in G.edges.data():
-            edge_data['weight'] = np.linalg.norm(centroids[src] - centroids[dest])
+            edge_data['weight'] = 1/(np.linalg.norm(centroids[src] - centroids[dest]) + 1)
         G = G.to_directed()
         nx.stochastic_graph(G, copy=False)
         self._edges = np.array(G.edges).T
@@ -106,7 +106,7 @@ class CovidDatasetLoader(object):
             for i in range(stacked_target.shape[1] - self.lags)
         ]
 
-    def get_dataset(self, lags: int = 4, from_drive = True) -> StaticGraphTemporalSignal:
+    def get_dataset(self, lags: int = 4, from_drive = False) -> StaticGraphTemporalSignal:
         """
         Args types:
             * **lags** *(int)* - The number of time lags.
