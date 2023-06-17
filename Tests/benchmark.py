@@ -121,6 +121,7 @@ class CovidBenchmark():
                 for epoch in tqdm(range(num_epochs)):
                     for time, snapshot in enumerate(train_dataset):
                         snapshot.to(device)
+                        print("Shape: ",snapshot.x.shape)
                         y_hat  = model(snapshot.x, snapshot.edge_index, snapshot.edge_attr)
                         cost = torch.mean((y_hat-snapshot.y)**2)
                         cost.backward()
