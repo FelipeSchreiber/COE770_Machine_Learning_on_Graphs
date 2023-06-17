@@ -166,7 +166,7 @@ class ADCRNN(torch.nn.Module):
         self._create_update_gate_parameters_and_layers()
         self._create_reset_gate_parameters_and_layers()
         self._create_candidate_state_parameters_and_layers()
-        self.PReLU_layer = torch.nn.PReLU()
+        # self.PReLU_layer = torch.nn.PReLU()
 
     def _set_hidden_state(self, X, H):
         if H is None:
