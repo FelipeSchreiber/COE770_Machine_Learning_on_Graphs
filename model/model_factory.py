@@ -73,9 +73,9 @@ class _DCRNN_(torch.nn.Module):
         return h
         
 class  _GConvGRU_(torch.nn.Module):
-    def __init__(self, node_features, output_size=32):
+    def __init__(self, node_features, output_size=32, filter_size=2):
         super(_GConvGRU_, self).__init__()
-        self.recurrent = GConvGRU(node_features, output_size)
+        self.recurrent = GConvGRU(node_features, output_size, K = filter_size)
         self.linear = torch.nn.Linear(output_size, 1)
 
     def forward(self, x, edge_index, edge_weight):
@@ -85,9 +85,9 @@ class  _GConvGRU_(torch.nn.Module):
         return h
 
 class _GCLSTM_(torch.nn.Module):
-    def __init__(self, node_features,output_size):
+    def __init__(self, node_features,output_size, filter_size=2):
         super(_GCLSTM_, self).__init__()
-        self.recurrent = GCLSTM(node_features, output_size, 1)
+        self.recurrent = GCLSTM(node_features, output_size, filter_size)
         self.linear = torch.nn.Linear(output_size, 1)
         self.h = self.c = None
 
@@ -108,8 +108,8 @@ def make_models(layers:list,num_feats,output_size=32,filter_size=2):
             ##_A3TGCN_(node_features = num_feats, output_size = output_size),
             #   _AGCNRN_(node_features = num_feats, output_size = output_size, filter_size=filter_size, num_nodes=5570),
               _DCRNN_(node_features= num_feats, output_size=output_size, filter_size=filter_size),
-              _GConvGRU_(node_features= num_feats, output_size=output_size),
-              _GCLSTM_(node_features= num_feats, output_size=output_size)
+              _GConvGRU_(node_features= num_feats, output_size=output_size, filter_size=filter_size),
+              _GCLSTM_(node_features= num_feats, output_size=output_size, filter_size=filter_size)
               ]
 
     return models
