@@ -105,8 +105,8 @@ class CovidBenchmark():
         num_feats = dataset[0].x.shape[1]
         stats = {"MSE":[],"model":[]}
         
-        layers = make_layers(num_feats,output_size,filter_size)
-        models = make_models(layers,output_size)
+        # layers = make_layers(num_feats,output_size,filter_size)
+        models = make_models(num_feats,output_size)
         gdrive_path = "/content/drive/MyDrive/COE770_GNN/"
         ##model_names is defined in model_factory
         for model,model_name in zip(models,model_names):
