@@ -63,7 +63,7 @@ class MY_AGCNRN_(torch.nn.Module):
 class MY_DCRNN_(torch.nn.Module):
     def __init__(self, node_features, output_size=32, filter_size=2):
         super(MY_DCRNN_, self).__init__()
-        self.recurrent = DCRNN(node_features, output_size, K=filter_size)
+        self.recurrent = DCRNN(in_channels=node_features, out_channels=output_size, K=filter_size)
         self.linear = torch.nn.Linear(output_size, 1)
 
     def forward(self, x, edge_index, edge_weight):
