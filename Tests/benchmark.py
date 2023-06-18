@@ -67,7 +67,7 @@ class CovidBenchmark():
                         optimizer.zero_grad()
                         del snapshot
                         # self.free_cache()
-                        self.check_mem()
+                        # self.check_mem()
                     if epoch % 10 == 0:
                         filepath = f"./model_weights_ADCRNN_{filter_size}_{gamma}"
                         if (os.path.isfile(filepath)):
