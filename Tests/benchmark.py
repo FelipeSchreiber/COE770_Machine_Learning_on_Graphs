@@ -51,7 +51,7 @@ class CovidBenchmark():
                                          out_channels = 5,\
                                          num_filters = filter_size).to(device)
                 else:
-                    model = get_model(False,num_features=35,num_filters=filter_size,gamma=gamma)
+                    model = get_model(False,num_features=num_feats,num_filters=filter_size,gamma=gamma)
                     model.to(device)
                 optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
                 model.train()
@@ -81,7 +81,7 @@ class CovidBenchmark():
                 torch.save(model, f"./the_whole_model_ADCRNN_{filter_size}_{gamma}")
                 self.free_cache()
             else:
-                model = get_model(False,num_features=35,num_filters=filter_size,gamma=gamma)
+                model = get_model(False,num_features=num_feats,num_filters=filter_size,gamma=gamma)
                 model.to(device)
 
             model.eval()
