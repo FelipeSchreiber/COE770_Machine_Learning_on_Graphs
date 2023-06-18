@@ -218,15 +218,13 @@ class ADCRNN(torch.nn.Module):
         """
         H = self._set_hidden_state(X, H)
         
-        adj_mat = to_dense_adj(edge_index, edge_attr=edge_weight)
-        adj_mat = adj_mat.reshape(adj_mat.size(1), adj_mat.size(2))
+        # adj_mat = to_dense_adj(edge_index, edge_attr=edge_weight)
+        # adj_mat = adj_mat.reshape(adj_mat.size(1), adj_mat.size(2))
         if residual_matrix is None:
-            matrix_sim = torch.mm(H, H.transpose(0, 1))
-            self.residual_matrix = F.tanh(self.PReLU_layer(matrix_sim))
+            matrix_sim = torch.mm(H, H.transpose(0, 1))   
+            adj_mat = self.residual_matrix = F.sigmoid(self.PReLU_layer(matrix_sim))
         else:
-            self.residual_matrix = residual_matrix
-            
-        adj_mat += self.residual_matrix
+            adj_mat = self.residual_matrix = residual_matrix
         edge_index_, edge_weight_ = dense_to_sparse(adj_mat)
 
         Z = self._calculate_update_gate(X, edge_index_, edge_weight_, H)
