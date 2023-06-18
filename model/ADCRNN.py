@@ -221,8 +221,9 @@ class ADCRNN(torch.nn.Module):
         # adj_mat = to_dense_adj(edge_index, edge_attr=edge_weight)
         # adj_mat = adj_mat.reshape(adj_mat.size(1), adj_mat.size(2))
         if residual_matrix is None:
-            matrix_sim = torch.mm(H, H.transpose(0, 1))   
-            adj_mat = self.residual_matrix = F.softmax(self.PReLU_layer(matrix_sim),dim=1)
+            matrix_sim = torch.mm(H, H.transpose(0, 1)) 
+            #self.PReLU_layer(  
+            adj_mat = self.residual_matrix = F.softmax(matrix_sim,dim=1)
         else:
             adj_mat = self.residual_matrix = residual_matrix
         edge_index_, edge_weight_ = dense_to_sparse(adj_mat)
