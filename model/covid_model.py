@@ -11,7 +11,7 @@ class MLP(nn.Module):
         super(MLP, self).__init__()
         self.layers = nn.Sequential(
             nn.Linear(num_input, hidden_output),
-            nn.PReLU(),
+            nn.ReLU(),
             nn.Linear(hidden_output, num_output),
         )
         
@@ -23,7 +23,7 @@ class MLP(nn.Module):
 class RecurrentGCN(torch.nn.Module):
     def __init__(self,num_features=35,out_channels = 5,num_filters=3):
         super(RecurrentGCN, self).__init__()
-        self.MLP = MLP(num_input = num_features,hidden_output=out_channels, num_output=out_channels)
+        self.MLP = MLP(num_input = num_features,hidden_output=100, num_output=out_channels)
         self.recurrent = ADCRNN(in_channels = num_features, out_channels = out_channels,\
                   K = num_filters, bias = True)
         self.linear = torch.nn.Linear(out_channels, 1)
