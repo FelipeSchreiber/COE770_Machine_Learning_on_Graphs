@@ -224,6 +224,7 @@ class CovidBenchmark():
                                 os.remove(filepath)
                                 torch.save(model.state_dict(), filepath)
                                 torch.save(model.state_dict(), gdrive_path+model_name)
+                                print(gdrive_path+model_name)
                 torch.save(model, f"./the_whole_model_DCRNN_Covid_{filter_size}")
             model.load_state_dict(torch.load(gdrive_path+model_name))
             model.to(device)
