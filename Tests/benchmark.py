@@ -219,6 +219,7 @@ class CovidBenchmark():
                         optimizer.step()
                         optimizer.zero_grad()
                         del snapshot
+                        print(epoch % 10)
                         if epoch % 10 == 0:
                             if (os.path.isfile(filepath)):
                                 os.remove(filepath)
