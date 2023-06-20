@@ -193,7 +193,7 @@ class CovidBenchmark():
         return stats_all,stats_test
     
     def run_DCRNN_covid(self,lags=4,train_model=True,filter_sizes = [2,4,8,16],\
-                              num_epochs=100,output_size=32,make_plot=True):
+                              num_epochs=100,output_size=32):
 
         loader = CovidDatasetLoader(method="other")
         dataset = loader.get_dataset(lags=lags)
@@ -223,9 +223,9 @@ class CovidBenchmark():
                             if (os.path.isfile(filepath)):
                                 os.remove(filepath)
                                 torch.save(model.state_dict(), filepath)
-                                torch.save(model.state_dict(), gdrive_path+filepath)
+                                torch.save(model.state_dict(), gdrive_path+model_name)
                 torch.save(model, f"./the_whole_model_DCRNN_Covid_{filter_size}")
-            model.load_state_dict(torch.load(gdrive_path+filepath))
+            model.load_state_dict(torch.load(gdrive_path+model_name))
             model.to(device)
             model.eval()
             cost = 0
