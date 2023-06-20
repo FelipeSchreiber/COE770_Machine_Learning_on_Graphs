@@ -187,6 +187,6 @@ class CovidBenchmark():
                 plt.legend(bbox_to_anchor=(1, 1))
                 plt.ylabel("Total de casos agregados")
                 plt.xticks(rotation=45)
-                plt.savefig("casos_agregados.png")
-                plt.show()
+        plt.savefig("casos_agregados.png")
+        plt.show()
         return stats_all,stats_test
