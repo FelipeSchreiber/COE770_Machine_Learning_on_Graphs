@@ -43,6 +43,7 @@ class CovidBenchmark():
     def run_test(self,lags=4,filter_sizes=[16,8,4],\
                  train_model=True,gammas=[1,1e4,1e6,1e8],\
                  num_epochs=100,warm_start=True):
+        
         loader = CovidDatasetLoader(method="other")
         dataset = loader.get_dataset(lags=lags)
         train_dataset, test_dataset = temporal_signal_split(dataset, train_ratio=0.8)
@@ -190,3 +191,51 @@ class CovidBenchmark():
         plt.savefig("casos_agregados.png")
         plt.show()
         return stats_all,stats_test
+    
+    def run_DCRNN_covid(self,lags=4,train_model=True,filter_sizes = [2,4,8,16],\
+                              num_epochs=100,output_size=32,make_plot=True):
+
+        loader = CovidDatasetLoader(method="other")
+        dataset = loader.get_dataset(lags=lags)
+        train_dataset, test_dataset = temporal_signal_split(dataset, train_ratio=0.8)
+        num_feats = dataset[0].x.shape[1]
+        stats = {"MSE":[],"model":[], "filter_size":[]}
+        
+        for filter_size in filter_sizes:
+            model = MY_DCRNN_(node_features = num_feats, output_size=output_size,\
+                               filter_size=filter_size).to(device)
+            optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+            model.train()
+            h = c = None
+            model_name= f"model_weights_DCRNN_Covid_{filter_size}"
+            filepath = "./"+model_name
+            if train_model:
+                for epoch in tqdm(range(num_epochs)):
+                    for time, snapshot in enumerate(train_dataset):
+                        snapshot.to(device)
+                        y_hat,h,c  = model(snapshot.x, snapshot.edge_index, snapshot.edge_attr,h,c)
+                        cost = torch.mean((y_hat-snapshot.y)**2)
+                        cost.backward()
+                        optimizer.step()
+                        optimizer.zero_grad()
+                        del snapshot
+                        if epoch % 10 == 0:
+                            if (os.path.isfile(filepath)):
+                                os.remove(filepath)
+                                torch.save(model.state_dict(), filepath)
+                                torch.save(model.state_dict(), gdrive_path+filepath)
+                torch.save(model, f"./the_whole_model_DCRNN_Covid_{filter_size}")
+            model.load_state_dict(torch.load(gdrive_path+filepath))
+            model.to(device)
+            model.eval()
+            cost = 0
+            for time, snapshot in enumerate(test_dataset):
+                snapshot.to(device)
+                y_hat,h,c = model(snapshot.x, snapshot.edge_index, snapshot.edge_attr,h,c)
+                cost = cost + torch.mean((y_hat-snapshot.y)**2).item()
+                del snapshot
+            cost = cost / (time+1)
+            stats["MSE"].append(cost)
+            stats["model"].append("DCRNN")
+            stats["filter_size"].append(filter_size)
+        return stats
